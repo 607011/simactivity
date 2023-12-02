@@ -13,7 +13,7 @@ Currently only works on macOS 10.4+
 ### Compile
 
 ```
-git clone https://github.com/raetselonkel/simactivity.git
+git clone https://github.com/607011/simactivity.git
 cd simactivity
 make
 ```
