@@ -1,68 +1,34 @@
-#include <ApplicationServices/ApplicationServices.h>
-#include <IOKit/IOKitLib.h>
-#include <IOKit/graphics/IOGraphicsLib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
-int64_t system_idle_secs()
+#include "fake.h"
+
+#define loop for (;;)
+
+int main(int argc, char *argv[])
 {
-    int64_t idle_secs = -1;
-    io_iterator_t it = 0;
-    if (IOServiceGetMatchingServices(kIOMainPortDefault, IOServiceMatching("IOHIDSystem"), &it) == KERN_SUCCESS)
+    static const int IDLE_TIMEOUT_SECS = 30;
+#ifdef DEBUG
+    const unsigned int CHECK_INTERVAL_SECS = 1;
+#else
+    const unsigned int CHECK_INTERVAL_SECS = 10;
+#endif
+    int idle_timeout_secs =
+        (argc == 2)
+            ? atoi(argv[1])
+            : IDLE_TIMEOUT_SECS;
+#ifdef DEBUG
+    printf("I am here (%d)\n", CHECK_INTERVAL_SECS);
+#endif
+    loop
     {
-        io_registry_entry_t entry = IOIteratorNext(it);
-        if (entry)
+        int dt = system_idle_secs();
+        if (dt > idle_timeout_secs)
         {
-            CFMutableDictionaryRef dict = NULL;
-            if (IORegistryEntryCreateCFProperties(entry, &dict, kCFAllocatorDefault, 0) == KERN_SUCCESS)
-            {
-                CFNumberRef obj = (CFNumberRef)CFDictionaryGetValue(dict, CFSTR("HIDIdleTime"));
-                if (obj != NULL)
-                {
-                    int64_t ns = 0;
-                    if (CFNumberGetValue(obj, kCFNumberSInt64Type, &ns))
-                    {
-                        idle_secs = ns / 1000000000LL;
-                    }
-                }
-                CFRelease(dict);
-            }
-            IOObjectRelease(entry);
-        }
-        IOObjectRelease(it);
-    }
-    return idle_secs;
-}
-
-CGPoint get_mouse_pos()
-{
-    CGEventRef event = CGEventCreate(NULL);
-    CGPoint cursor_pos = CGEventGetLocation(event);
-    CFRelease(event);
-    return cursor_pos;
-}
-
-void move_mouse_to(CGPoint point)
-{
-    CGEventRef event = CGEventCreateMouseEvent(NULL, kCGEventMouseMoved, point, kCGMouseButtonLeft);
-    CGEventPost(kCGHIDEventTap, event);
-    CFRelease(event);
-}
-
-int main()
-{
-    const unsigned int CHECK_INTERVAL_SECS = 5;
-    const int64_t IDLE_TIMEOUT_SECS = 30;
-    for (;;)
-    {
-        int64_t dt = system_idle_secs();
-        if (dt > IDLE_TIMEOUT_SECS)
-        {
-            CGPoint currentPos = get_mouse_pos();
-            move_mouse_to(CGPointMake(currentPos.x + 1, currentPos.y));
-            move_mouse_to(currentPos);
-            printf("Jiggle @ %d/%d\n", (int)currentPos.x, (int)currentPos.y);
+            fake_user_event();
         }
         sleep(CHECK_INTERVAL_SECS);
     }
-    return errSecSuccess;
+    return EXIT_SUCCESS;
 }
