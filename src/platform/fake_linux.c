@@ -2,6 +2,10 @@
 
 #include "fake.h"
 
+#ifdef DEBUG
+#include <stdio.h>
+#endif
+
 int system_idle_secs()
 {
     Display *dpy = XOpenDisplay(NULL);
@@ -14,5 +18,14 @@ int system_idle_secs()
 
 void fake_user_event()
 {
-    // TODO
+    Display *dpy = XOpenDisplay(NULL);
+    if (dpy == NULL)
+        return;
+    Window win = XRootWindow(dpy, 0);
+    XWarpPointer(dpy, None, win, 0, 0, 0, 0, 1, 0);
+    XFlush(dpy);
+    XWarpPointer(dpy, None, win, 0, 0, 0, 0, -1, 0);
+    XFlush(dpy);
+    printf("fake\n");
 }
+

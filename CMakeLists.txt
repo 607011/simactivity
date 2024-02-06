@@ -7,14 +7,13 @@ project(iamhere
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_library(FRAMEWORK_CARBON Carbon)
-find_library(FRAMEWORK_IOKIT IOKIt)
-
 if(LINUX)
-  FindX11()
+  find_package(X11 REQUIRED)
 endif()
 
 if(APPLE)
+  find_library(FRAMEWORK_CARBON Carbon)
+  find_library(FRAMEWORK_IOKIT IOKIt)
   set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "" FORCE)
   set(PLATFORM_SOURCES src/platform/fake_mac.c)
 elseif(LINUX)
@@ -25,7 +24,7 @@ endif()
 
 if(UNIX)
   set(CMAKE_C_FLAGS "-pthread -Wno-deprecated-declarations")
-  set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -O0 -g3 -ggdb -DDEBUG -pedantic -Wall -Wextra -Wconversion -Wreorder -Wuninitialized -Wtype-limits -Wno-pragmas")
+  set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -O0 -g3 -ggdb -DDEBUG -pedantic -Wall -Wextra -Wconversion -Wuninitialized -Wtype-limits -Wno-pragmas")
   set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS} -Os -DNDEBUG -Wno-deprecated")
 elseif(WIN32)
   set(CMAKE_C_FLAGS_DEBUG "/Od /Wall /Zi /D_CRT_SECURE_NO_WARNINGS /D__STDC_WANT_SECURE_LIB__")
@@ -47,11 +46,19 @@ PRIVATE
 PUBLIC
 )
 
-target_link_libraries(iamhere
-  PUBLIC
-  ${FRAMEWORK_CARBON}
-  ${FRAMEWORK_IOKIT}
-)
+if(APPLE)
+  target_link_libraries(iamhere
+    PUBLIC
+    ${FRAMEWORK_CARBON}
+    ${FRAMEWORK_IOKIT}
+  )
+elseif(LINUX)
+  target_link_libraries(iamhere
+    PUBLIC
+    Xss
+    X11
+  )
+endif()
 
 if(UNIX)
   if(CMAKE_BUILD_TYPE STREQUAL "Release")
