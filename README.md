@@ -2,7 +2,7 @@
 
 Simulate user activity by moving the mouse pointer back and forth a bit whenever the user has been idle for a specified amount of time.
 
-Currently only works on macOS 10.4 and newer
+Currently only works on macOS 10.12 (Sierra) and later
 
 ## Build
 
