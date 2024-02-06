@@ -2,7 +2,7 @@
 
 Simulate user activity by moving the mouse pointer back and forth a bit whenever the user has been idle for a specified amount of time.
 
-Currently only works on macOS 10.4+
+Currently only works on macOS 10.4 and newer
 
 ## Build
 
@@ -16,4 +16,11 @@ Currently only works on macOS 10.4+
 git clone https://github.com/607011/simactivity.git
 cd simactivity
 make
+```
+
+
+## Run
+
+```
+./jiggle
 ```
