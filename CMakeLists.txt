@@ -23,7 +23,7 @@ elseif(WIN32)
 endif()
 
 if(UNIX)
-  set(CMAKE_C_FLAGS "-pthread -Wno-deprecated-declarations")
+  set(CMAKE_C_FLAGS "-std=c17 -pthread -Wno-deprecated-declarations")
   set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -O0 -g3 -ggdb -DDEBUG -pedantic -Wall -Wextra -Wconversion -Wuninitialized -Wtype-limits -Wno-pragmas")
   set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS} -Os -DNDEBUG -Wno-deprecated")
 elseif(WIN32)
@@ -57,6 +57,7 @@ elseif(LINUX)
     PUBLIC
     Xss
     X11
+    Xtst
   )
 endif()
 
