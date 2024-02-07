@@ -7,6 +7,13 @@ project(iamhere
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+include(CheckIncludeFiles)
+
+CHECK_INCLUDE_FILES("unistd.h" HAVE_UNISTD_H)
+if(HAVE_UNISTD_H)
+    add_definitions(-DHAVE_UNISTD_H)
+endif()
+
 if(LINUX)
   find_package(X11 REQUIRED)
 endif()
@@ -27,7 +34,7 @@ if(UNIX)
   set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -O0 -g3 -ggdb -DDEBUG -pedantic -Wall -Wextra -Wconversion -Wuninitialized -Wtype-limits -Wno-pragmas")
   set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS} -Os -DNDEBUG -Wno-deprecated")
 elseif(WIN32)
-  set(CMAKE_C_FLAGS_DEBUG "/Od /Wall /Zi /D_CRT_SECURE_NO_WARNINGS /D__STDC_WANT_SECURE_LIB__")
+  set(CMAKE_C_FLAGS_DEBUG "/Od /Wall /Zi /wd4668 /wd4702 /DDEBUG /D_CRT_SECURE_NO_WARNINGS /D__STDC_WANT_SECURE_LIB__")
   set(CMAKE_C_FLAGS_RELEASE "/Os /W1 /DNDEBUG /D_CRT_SECURE_NO_WARNINGS /D__STDC_WANT_SECURE_LIB__")
 endif(UNIX)
 
