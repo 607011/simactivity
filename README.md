@@ -8,7 +8,7 @@ Successfully tested with
    - [x] macOS Sonoma 14.3 (Apple silicon)
  - Linux (X11)
    - [x] Kali Linux in UTM VM
- -  Windows
+ - Windows
    - [x] Windows 11
 
 ## Build
