@@ -18,11 +18,22 @@ Successfully tested with
 #### macOS
 
  - [Command Line Tools for Xcode](https://developer.apple.com/download/all/)
+ - [CMake](https://cmake.org/)
   
 #### Windows
 
+ - [Build Tools for Visual Studio](https://learn.microsoft.com/en-us/cpp/build/building-on-the-command-line)
+ - Git and [CMake](https://cmake.org/):
+   ```
+   winget install Git.Git
+   winget install Kitware.CMake
+   ```
+
 #### Linux
 
+ - [CMake](https://cmake.org/)
+ - C++ compiler, e.g. g++
+ - X11 libs
 
 ### Compile
 
